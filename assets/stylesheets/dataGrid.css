@@ -1,0 +1,254 @@
+.console-data-grid {
+    position: relative;
+    border: 1px solid #aaa;
+    font-size: 11px;
+    line-height: 120%;
+}
+
+.console-data-grid table {
+    table-layout: fixed;
+    border-spacing: 0;
+    border-collapse: separate;
+    height: 100%;
+    width: 100%;
+}
+
+.console-data-grid .header-container,
+.console-data-grid .data-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow-x: hidden;
+}
+
+.console-data-grid .header-container {
+    top: 0;
+    height: 17px;
+ }
+
+.console-data-grid .data-container {
+    top: 17px;
+    bottom: 0;
+    overflow-y: overlay;
+    transform: translateZ(0);
+}
+
+.console-data-grid.inline .header-container,
+.console-data-grid.inline .data-container {
+    position: static;
+}
+
+.console-data-grid.inline .corner {
+    display: none;
+}
+
+.platform-mac .console-data-grid .corner,
+.console-data-grid.data-grid-fits-viewport .corner {
+    display: none;
+}
+
+.console-data-grid .corner {
+    width: 14px;
+    padding-right: 0;
+    padding-left: 0;
+    border-left: 0 none transparent !important;
+}
+
+.console-data-grid .top-filler-td,
+.console-data-grid .bottom-filler-td {
+    height: auto !important;
+    padding: 0 !important;
+}
+
+.console-data-grid table.data {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 0 none transparent;
+    background-image: linear-gradient(to bottom, white, white 50%, rgb(234, 243, 255) 50%, rgb(234, 243, 255));
+    background-size: 128px 32px;
+    table-layout: fixed;
+}
+
+.console-data-grid.inline table.data {
+    position: static;
+}
+
+.console-data-grid table.data tr {
+    display: none;
+}
+
+.console-data-grid table.data tr.revealed {
+    display: table-row;
+}
+
+.console-data-grid td,
+.console-data-grid th {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 14px;
+    border-left: 1px solid #aaa;
+}
+
+.console-data-grid th:first-child,
+.console-data-grid td:first-child {
+    border-left: none !important;
+}
+
+.console-data-grid td {
+    height: 16px; /* Keep in sync with .console-data-grid table.data @ background-size */
+    vertical-align: top;
+    padding: 1px 4px;
+    -webkit-user-select: text;
+}
+
+.console-data-grid th {
+    height: auto;
+    text-align: left;
+    background-color: #eee;
+    border-bottom: 1px solid #aaa;
+    font-weight: normal;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+
+.console-data-grid td > div,
+.console-data-grid th > div {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.console-data-grid td.editing > div {
+    text-overflow: clip;
+}
+
+.console-data-grid .center {
+    text-align: center;
+}
+
+.console-data-grid .right {
+    text-align: right;
+}
+
+.console-data-grid th.sortable {
+    position: relative;
+}
+
+.console-data-grid th.sortable:active {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.console-data-grid th .sort-order-icon-container {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    bottom: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.console-data-grid th .sort-order-icon {
+    margin-right: 4px;
+    background-image: url(../images/toolbarButtonGlyphs.png);
+    background-size: 352px 168px;
+    opacity: 0.5;
+    width: 8px;
+    height: 7px;
+    display: none;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.console-data-grid th .sort-order-icon {
+    background-image: url(../images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
+.console-data-grid th.sort-ascending .sort-order-icon {
+    display: block;
+    background-position: -4px -111px;
+}
+
+.console-data-grid th.sort-descending .sort-order-icon {
+    display: block;
+    background-position: -20px -99px;
+}
+
+.console-data-grid th:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.console-data-grid button {
+    line-height: 18px;
+    color: inherit;
+}
+
+.console-data-grid td.disclosure::before {
+    -webkit-user-select: none;
+    -webkit-mask-image: url(../images/toolbarButtonGlyphs.png);
+    -webkit-mask-position: -4px -96px;
+    -webkit-mask-size: 352px 168px;
+    float: left;
+    width: 8px;
+    height: 12px;
+    margin-right: 2px;
+    content: "a";
+    color: transparent;
+    position: relative;
+    top: 1px;
+    background-color: rgb(110, 110, 110);
+}
+
+.console-data-grid tr:not(.parent) td.disclosure::before {
+    background-color: transparent;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.console-data-grid tr.parent td.disclosure::before {
+    -webkit-mask-image: url(../images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
+.console-data-grid tr.expanded td.disclosure::before {
+    -webkit-mask-position: -20px -96px;
+}
+
+.console-data-grid tr.selected {
+    background-color: rgb(212, 212, 212);
+    color: inherit;
+}
+
+.console-data-grid:focus tr.selected {
+    background-color: rgb(56, 121, 217);
+    color: white;
+}
+
+.console-data-grid:focus tr.selected a {
+    color: white;
+}
+
+.console-data-grid:focus tr.parent.selected td.disclosure::before {
+    background-color: white;
+    -webkit-mask-position: -4px -96px;
+}
+
+.console-data-grid:focus tr.expanded.selected td.disclosure::before {
+    background-color: white;
+    -webkit-mask-position: -20px -96px;
+}
+
+.console-data-grid-resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    z-index: 500;
+}
+
+
+.console-data-grid tr:nth-child(even) {
+	background: rgb(234, 243, 255);
+}

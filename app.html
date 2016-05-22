@@ -1,0 +1,138 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/pretty-jason.css">
+		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/jquery.resizableColumns.css">
+		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/panel.css">
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/console.css">
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/dataGrid.css">
+
+	</head>
+	<body id="firephp-chrome">
+		<div class="split-view">
+			<div class="split-view-contents split-view-contents-requests">
+				<div class="data-grid data-grid-requests">
+					<table class="header" id="requests-header" data-resizable-columns-sync="#requests">
+						<thead>
+							<tr>
+								<th class='controller'>Path</th>
+								<th class='method'>Method</th>
+								<th class='status'>Status</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="data-container">
+						<table id="requests" data-resizable-columns-sync="#requests-header">
+							<tr class="sizing">
+								<td class='controller'></td>
+								<td class='method'></td>
+								<td class='status'></td>
+							</tr>
+							<tr v-for="request in requests" v-on:click="setActive(request.id)" v-bind:class="{ 'selected': request.id == activeId}">
+								<td class='controller' title="{{request.uri}} ({{ request.controller}}">
+									<span class="notificationsCount">
+										<span class="errorsCount" v-show="request.errorsCount">
+											<i class="fa fa-exclamation-circle"></i>
+											{{request.errorsCount}}
+										</span>
+										<span class="warningsCount" v-show="request.warningsCount">
+											<i class="fa fa-exclamation-triangle"></i>
+											{{request.warningsCount}}
+										</span>
+									</span>
+									{{request.uri}}
+								</td>
+								<td class='method' title="{{request.method}}">{{request.method}}</td>
+								<td class='status' title="{{request.responseStatus}}">{{request.responseStatus}}</td>
+							</tr>
+							<tr class="filler">
+								<td class='controller'></td>
+								<td class='method'></td>
+								<td class='status'></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="split-view-contents split-view-contents-details">
+				<div id="tabs" class="tabbed-pane">
+
+					<div class="tabbed-pane-header">
+						<div class="tabbed-pane-header-contents">
+							<ul class="tabbed-pane-header-tabs">
+								<li class="tabbed-pane-header-tab">
+									<a href="#tab-log" class="tabbed-pane-header-tab-title">Log</a>
+								</li>
+								<li class="tabbed-pane-header-tab" v-for="(index,msg) in activeLog.messages | filterBy 'group' in 'type'" >
+									<a href="#tab-log-{{index}}" class="tabbed-pane-header-tab-title" >{{msg.label}}</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="toolbar"></div>
+
+					</div>
+
+					<div class="tabbed-pane-content data-grid data-grid-details">
+						
+						<div id="tab-log">
+							<table class="stupidtable" id="log">
+								<thead>
+									<tr>
+										<th data-sort="string">Message</th>
+										<th data-sort="string">position</th>
+									</tr>
+								</thead>
+								<tbody>
+									<template  v-for="msg in activeLog.messages">
+										<template v-if="msg.type != 'group'">
+										<tr class="console-message-wrapper" v-pretty-log="msg">
+											<td class="log-message"></td>
+											<td class="log-file" v-pretty-file="msg.meta"></td>
+										</tr>
+										</template>
+									</template>
+								</tbody>
+							</table>
+						</div>
+						
+						<div id="tab-log-{{index}}" v-for="(index, msg) in activeLog.messages | filterBy 'group' in 'type'">
+							<table class="stupidtable" id="log-{{index}}">
+								<thead>
+									<tr>
+										<th data-sort="string">Message</th>
+										<th data-sort="string">position</th>
+									</tr>
+								</thead>
+								<tbody>
+									<template  v-for="item in msg.messages">
+										<tr class="console-message-wrapper" v-pretty-log="item">
+											<td class="log-message"></td>
+											<td class="log-file" v-pretty-file="item.meta"></td>
+										</tr>
+									</template>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<script src="vendor/assets/javascripts/jquery-2.0.2.min.js"></script>
+		<script src="vendor/assets/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="vendor/assets/javascripts/stupidtable.min.js"></script>
+		<script src="vendor/assets/javascripts/sugar-1.3.9.min.js"></script>
+		<script src="vendor/assets/javascripts/URI.min.js"></script>
+		<script src="vendor/assets/javascripts/keymaster.min.js"></script>
+		<script src="vendor/assets/javascripts/vue.min.js"></script>
+		<script src="vendor/assets/javascripts/pretty-jason.js"></script>
+		<script src="vendor/assets/javascripts/jquery.resizableColumns.min.js"></script>
+		<script src="assets/javascripts/panel.js"></script>
+		<script src="assets/javascripts/directive.js"></script>
+		<!--<script src="assets/javascripts/toolbar.js"></script>-->
+	</body>
+</html>

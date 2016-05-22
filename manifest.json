@@ -1,0 +1,37 @@
+{
+	"name": "firephp-chrome",
+	"version": "0.1",
+	"manifest_version": 2,
+	"description": "A firephp log extension for chrome",
+	"devtools_page": "devtools.html",
+	"browser_action": {
+		"default_icon": "assets/images/FirePHP_19.png",
+		"default_title": ""
+	},
+	"background": {
+		"scripts": [
+			"vendor/assets/javascripts/jquery-2.0.2.min.js",
+			"assets/javascripts/background.js"
+		]
+	},
+	"content_scripts":
+	[
+		{
+			"matches" : ["<all_urls>"],
+			"js" : ["assets/javascripts/logging.js"],
+			"run_at": "document_start"
+		}
+	],
+	"permissions": [
+		"storage",
+		"webRequest",
+		"webRequestBlocking",
+		"debugger",
+		"http://*/",
+		"https://*/"
+	],
+	"icons": {
+		 "48": "assets/images/logo-48x48.png",
+		"128": "assets/images/logo-128x128.png"
+	}
+}
