@@ -43,9 +43,9 @@ var app= new Vue({
 
 			chrome.devtools.network.onRequestFinished.addListener(function(request)
 			{
-				var isPoweredOn = false;
+				var isPoweredOn = true;
 				chrome.storage.local.get('isPoweredOn', function(result) {
-					isPoweredOn = result.isPoweredOn;
+					isPoweredOn = typeof result.isPoweredOn == 'undefined' ? true : result.isPoweredOn;
 					if (!isPoweredOn) {
 						return;
 					}
