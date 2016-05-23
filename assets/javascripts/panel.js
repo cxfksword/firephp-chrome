@@ -35,6 +35,19 @@ var app= new Vue({
 	methods: {
 	   initChrome: function() {
 		   var self = this;
+		   var isPoweredOn = true;
+		   chrome.storage.local.get('isPoweredOn', function(result) {
+				isPoweredOn = typeof result.isPoweredOn == 'undefined' ? true : result.isPoweredOn;
+		   });
+		   chrome.storage.onChanged.addListener(function(changes, area) {
+  				if(area == "local") {
+  					for(var key in changes) {
+  						if (key == 'isPoweredOn') {
+  							isPoweredOn = changes[key];
+  						}
+  					}
+  				}
+  			});
 			// key('⌘+k, ctrl+l', function() {
 			// 	this.$apply(function() {
 			// 		this.clear();
@@ -43,13 +56,14 @@ var app= new Vue({
 
 			chrome.devtools.network.onRequestFinished.addListener(function(request)
 			{
-				var isPoweredOn = true;
-				chrome.storage.local.get('isPoweredOn', function(result) {
-					isPoweredOn = typeof result.isPoweredOn == 'undefined' ? true : result.isPoweredOn;
 					if (!isPoweredOn) {
 						return;
 					}
 					
+					var ext = request.request.url.split('.').pop().split(/\#|\?/)[0];
+					if (ext == 'js' || ext == 'css' || ext == 'ttf' || ext == 'png' || ext == 'gif' ||  ext == 'bmp') {
+						return;
+					}
 					var headers = request.response.headers;
 					var messages = self.processWfHeaders(headers);
 					if (messages.length <= 0) {
@@ -65,7 +79,7 @@ var app= new Vue({
 						controller:request.request.url,
 						errorsCount:0,
 						warningsCount:0,
-						method:request.request.method,
+						method: self.getRequestMethod(request.request),
 						responseStatus:'200'
 					};
 					$.each(request.request.headers, function(i, header) {
@@ -77,11 +91,15 @@ var app= new Vue({
 					data.cookies = request.request.cookies;
 					data.log = messages;
 					self.addRequest(requestId, data);
-				});
 			});
 	   },
 	
 		processWfHeaders : function(headers) {
+			headers.sort(function(a,b) {
+				var arr1 = a.name.split('-');
+				var arr2 = b.name.split('-');
+				return parseInt(arr1[arr1.length-1]) -parseInt(arr2[arr2.length-1]); }
+			);
 			var messages = [];
 			var currentMessage = "";
 			for (var i in headers)
@@ -167,7 +185,7 @@ var app= new Vue({
 		
 		resizableColumns: function(selector) {
 			var $element = $(selector);
-			var options = { minWidth: 5 };
+			var options = { minWidth: 10 };
 
 			if ($element.data('resizable-columns-sync')) {
 				var $target = $($element.data('resizable-columns-sync'));
@@ -342,6 +360,9 @@ var app= new Vue({
 			var groupStack = [];
 			var curGroup = topGroup;
 			$.each(data, function(key, value) {
+				if (!value) {
+					return;
+				}
 				/*
 				Message example:
 				0: Object
@@ -516,6 +537,17 @@ var app= new Vue({
 
 		handleResize: function() {
 			this.activeTimelineLegend = this.generateTimelineLegend();
+		},
+		
+		getRequestMethod : function(request) {
+			var method = request.method;
+			for (var i=0; i<request.headers.length; i++ ) {
+				if (request.headers[i].value == 'XMLHttpRequest') {
+					method = 'xhr';
+				}
+			}
+			
+			return method;
 		}
 	}
 });

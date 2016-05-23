@@ -1,6 +1,6 @@
 {
 	"name": "firephp-chrome",
-	"version": "0.2",
+	"version": "0.2.1",
 	"manifest_version": 2,
 	"description": "A firephp log extension for chrome",
 	"devtools_page": "devtools.html",
@@ -14,14 +14,6 @@
 			"assets/javascripts/background.js"
 		]
 	},
-	"content_scripts":
-	[
-		{
-			"matches" : ["<all_urls>"],
-			"js" : ["assets/javascripts/logging.js"],
-			"run_at": "document_start"
-		}
-	],
 	"permissions": [
 		"storage",
 		"webRequest",

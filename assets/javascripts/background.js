@@ -34,7 +34,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details)
 {
 	if (!isPoweredOn)
 	{
-		return {};
+		return { requestHeaders: details.requestHeaders };
 	}
 	details.requestHeaders.push(
 	{

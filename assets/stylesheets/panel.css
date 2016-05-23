@@ -175,7 +175,7 @@ th, td {
 .data-grid-requests .format,
 .data-grid-requests .status {
 	text-align: center;
-	width: 50px;
+	width: 80px;
 }
 
 .data-grid-requests .duration {
