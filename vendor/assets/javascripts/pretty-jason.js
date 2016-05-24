@@ -27,149 +27,58 @@ g.PrettyJason.prototype.print = function(target)
 g.PrettyJason.prototype.generateHtml = function()
 {
 	var $list = $('<ul class="pretty-jason"></ul>');
+	var $li = $('<li></li>');
+	var $item = $('<pre></pre>');
 
-	var $item = $('<li></li>');
 
-	var $itemName = $('<span><span class="pretty-jason-icon"><i class="pretty-jason-icon-closed"></i></span>Object </span>');
-	$itemName.click(this._objectNodeClickedCallback);
+	var json = JSON.stringify(this.data);
+	var preview = json.length > 80? json.substr(0, 80) + '...' : json;
+	var $itemName = $('<span><span class="pretty-jason-icon"><i class="pretty-jason-icon-closed"></i></span> </span>');
+	
 
 	$item.append($itemName);
-	$item.append(this._generateHtmlPreview(this.data));
-	$item.append('<ul style="display:none"><li>' + this._generateHtmlObjectNode(this.data) + '</li></ul>');
+	$item.append(this._highlight(preview));
+	$item.click(this._objectNodeClickedCallback);
+	$li.append($item);
+	
+	var $clipboard = $('<i class="fa clipboard" aria-hidden="true" title="Copy!"></i>');
+	new Clipboard($clipboard.get(0), {
+		text: function(trigger) {
+			return $(trigger).closest('li').find('ul pre').text();
+		}
+	});
+	$li.append($clipboard);
+	// $clipboard.click(this._copyClickedCallback);
+	
+	
+	
+	var json = JSON.stringify(this.data, undefined, 2);
+	$li.append('<ul style="display:none"><li><pre>' + this._highlight(json) + '</li></ul></pre>')
 
-	$list.append($item);
-
+	$list.append($li);
 	return $list;
 };
 
-g.PrettyJason.prototype._generateHtmlObjectNode = function(data)
+g.PrettyJason.prototype._highlight = function(json)
 {
-	var $html = $('<span class="pretty-jason-preview"></span>');
-
-
-	for (var key in data) {
-		var val = data[key];
-		var valType = this._getValueType(val);
-
-		if (valType == 'string') {
-			val = '"' + val + '"';
+	json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+		var cls = 'number';
+		if (/^"/.test(match)) {
+			if (/:$/.test(match)) {
+				cls = 'key';
+			} else {
+				cls = 'string';
+			}
+		} else if (/true|false/.test(match)) {
+			cls = 'boolean';
+		} else if (/null/.test(match)) {
+			cls = 'null';
 		}
-
-		if (valType == 'object') {
-			$html.append('<span class="pretty-jason-preview-item"><span class="pretty-jason-key">' + key + ':</span> ' + this._generateHtmlObjectNode(val) + '</span>');
-		} else if (valType == 'array') {
-			$html.append('<span class="pretty-jason-preview-item"><span class="pretty-jason-key">' + key + ':</span> ' + this._generateHtmlArrayNode(val) + '</span>');
-		} else {
-			$html.append($('<span class="pretty-jason-preview-item"><span class="pretty-jason-key">' + key + ':</span> <span class="pretty-jason-value-' + valType + '">' + val + '</span></span>'));
-		}
-
-	}
-
-	return $html.wrap("<div>").parent().html();
+		return '<span class="' + cls + '">' + match + '</span>';
+	});
 };
 
-g.PrettyJason.prototype._generateHtmlArrayNode = function(data)
-{
-	var $html = $('<span class="pretty-jason-preview-array"></span>');
-
-
-	for (var key in data) {
-		var val = data[key];
-		var valType = this._getValueType(val);
-
-		if (valType == 'string') {
-			val = '"' + val + '"';
-		}
-
-		if (valType == 'object') {
-			$html.append('<span class="pretty-jason-preview-item">' + this._generateHtmlObjectNode(val) + '</span>');
-		} else if (valType == 'array') {
-			$html.append('<span class="pretty-jason-preview-item">' + this._generateHtmlArrayNode(val) + '</span>');
-		} else {
-			$html.append($('<span class="pretty-jason-preview-item"><span class="pretty-jason-value-' + valType + '">' + val + '</span></span>'));
-		}
-
-	}
-
-	return $html.wrap("<div>").parent().html();
-};
-
-g.PrettyJason.prototype._generateHtmlNode = function(data)
-{
-	var $list = $('<ul style="display:none"></ul>');
-
-	for (var key in data) {
-		var val = data[key];
-		var valType = this._getValueType(val);
-		var $item;
-
-		if (valType == 'string') {
-			val = '"' + val + '"';
-		}
-
-		if (valType == 'object') {
-			$item = $('<li></li>');
-
-			var $itemName = $('<span><span class="pretty-jason-icon"><i class="pretty-jason-icon-closed"></i></span><span class="pretty-jason-key">' + key + ':</span> Object</span>');
-			$itemName.click(this._objectNodeClickedCallback);
-
-			$item.append($itemName);
-			$item.append(this._generateHtmlNode(val));
-		} else {
-			$item = $('<li><span><span class="pretty-jason-icon"></span><span class="pretty-jason-key">' + key + ':</span> <span class="pretty-jason-value-' + valType + '">' + val + '</span></span></li>');
-		}
-
-		$list.append($item);
-	}
-
-	return $list;
-};
-
-g.PrettyJason.prototype._generateHtmlPreview = function(data)
-{
-	var $html = $('<span class="pretty-jason-preview"></span>');
-
-	var i = 0;
-	for (var key in data) {
-		var val = data[key];
-		var valType = this._getValueType(val);
-		var $item;
-
-		if (valType == 'string') {
-			val = '"' + val + '"';
-		}
-
-		if (valType == 'object' || valType == 'array') {
-			$item = $('<span class="pretty-jason-preview-item"><span class="pretty-jason-key">' + key + ':</span> <span class="pretty-jason-value">Object</span></span>');
-		} else {
-			$item = $('<span class="pretty-jason-preview-item"><span class="pretty-jason-key">' + key + ':</span> <span class="pretty-jason-value-' + valType + '">' + val + '</span></span>');
-		}
-
-		$html.append($item);
-
-		if (++i >= 3) {
-			$html.append('<span class="pretty-jason-preview-item">...</span>');
-			break;
-		}
-	}
-
-	return $html;
-};
-
-g.PrettyJason.prototype._getValueType = function(val)
-{
-	var valType = typeof val;
-
-	if (val === null) {
-		valType = 'null';
-	} else if (val === undefined) {
-		valType = 'undefined';
-	} else if (valType == 'object' && Array.isArray(val)) {
-		valType = 'array';
-	}
-
-	return valType;
-};
 
 g.PrettyJason.prototype._objectNodeClickedCallback = function()
 {
@@ -187,6 +96,15 @@ g.PrettyJason.prototype._objectNodeClickedCallback = function()
 		$icon.addClass('pretty-jason-icon-closed');
 	}
 };
+
+// g.PrettyJason.prototype._copyClickedCallback = function()
+// {
+// 	new Clipboard(, {
+// 		target: function(trigger) {
+// 			return trigger.nextElementSibling;
+// 		}
+// 	});
+// };
 
 g.PrettyJasonException = function(message, exception)
 {

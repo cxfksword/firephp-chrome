@@ -431,3 +431,52 @@ th, td {
 .stupidtable th {
 	cursor: pointer;
 }
+
+.panel-detail {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+    background: #fff;
+    border: 1px solid rgb(205, 205, 205);
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+	display: none;
+}
+
+.panel-detail-header {
+	height: 30px;
+	background: rgb(246, 246, 246);
+	padding: 2px 10px;
+	color:#666;
+	font-size: 12px;
+	text-align: center;
+	position: relative;
+	line-height: 24px;
+}
+
+.panel-detail-header a {
+	position: absolute;
+	width: 50px;
+	right: 0px;
+	top: 2px;
+	text-decoration: none;
+	color: #111;
+}
+
+.panel-detail-header span {
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	left: 5px;
+	top : 5px;
+	background-image: url(../images/FirePHP_16.png);
+}
+
+.panel-detail-body pre {
+    height: 95%;
+    overflow: auto;
+    padding: 10px 5px;
+    margin: 0px;
+}

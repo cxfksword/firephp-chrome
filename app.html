@@ -11,6 +11,13 @@
 	<body id="firephp-chrome">
 		<div class="split-view">
 			<div class="split-view-contents split-view-contents-requests">
+				<div class="panel-detail">
+					<div class="panel-detail-header">
+						<span>&nbsp;</span>
+						<div>Variable Viewer</div><a href="javascript:;" v-on:click="hideDetailPanel($event)">Close</a>
+					</div>
+					<div class="panel-detail-body"><pre></pre></div>
+				</div>
 				<div class="data-grid data-grid-requests">
 					<table class="header" id="requests-header" data-resizable-columns-sync="#requests">
 						<thead>
@@ -131,6 +138,7 @@
 		<script src="vendor/assets/javascripts/vue.min.js"></script>
 		<script src="vendor/assets/javascripts/pretty-jason.js"></script>
 		<script src="vendor/assets/javascripts/jquery.resizableColumns.min.js"></script>
+		<script src="vendor/assets/javascripts/clipboard.min.js"></script>
 		<script src="assets/javascripts/panel.js"></script>
 		<script src="assets/javascripts/directive.js"></script>
 		<!--<script src="assets/javascripts/toolbar.js"></script>-->

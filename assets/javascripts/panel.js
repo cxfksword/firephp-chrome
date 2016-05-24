@@ -548,6 +548,12 @@ var app= new Vue({
 			}
 			
 			return method;
+		},
+		
+		hideDetailPanel: function(e) {
+			$(e.target).closest('div.panel-detail').hide();
 		}
+		
+		
 	}
 });
