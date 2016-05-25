@@ -16,7 +16,7 @@ var app= new Vue({
 		activeViews:[],
 
 		showIncomingRequests:true,
-		
+
 		toolBarButtons: []
 	},
 	ready: function() {
@@ -26,7 +26,7 @@ var app= new Vue({
 
 		this.initChrome();
 		this.createToolbar();
-		
+
 		window.addEventListener('resize', this.handleResize);
 	},
 	beforeDestroy: function () {
@@ -59,7 +59,7 @@ var app= new Vue({
 					if (!isPoweredOn) {
 						return;
 					}
-					
+
 					var ext = request.request.url.split('.').pop().split(/\#|\?/)[0];
 					if (ext == 'js' || ext == 'css' || ext == 'ttf' || ext == 'png' || ext == 'gif' ||  ext == 'bmp') {
 						return;
@@ -69,8 +69,8 @@ var app= new Vue({
 					if (messages.length <= 0) {
 						return;
 					}
-					
-					
+
+
 					var requestId = self.guid();
 					var requestHeaders = {};
 					var data = {
@@ -93,8 +93,15 @@ var app= new Vue({
 					self.addRequest(requestId, data);
 			});
 	   },
-	
+
 		processWfHeaders : function(headers) {
+			var enableZlib = false;
+			$.each(headers, function(i, header) {
+				if (header.name == 'X-FirePHP-Encoding' && header.value == 'zlib-deflate') {
+					enableZlib = true;
+				}
+			});
+
 			headers.sort(function(a,b) {
 				var arr1 = a.name.split('-');
 				var arr2 = b.name.split('-');
@@ -122,6 +129,9 @@ var app= new Vue({
 						try
 						{
 							var idx = parseInt(wf_header[2]) - 1;
+							if (enableZlib) {
+								currentMessage = ZLIB.inflateInit().inflate(atob(currentMessage));
+							}
 							messages[idx] = jQuery.parseJSON(currentMessage);
 						}
 						catch (e)
@@ -139,7 +149,7 @@ var app= new Vue({
 			}
 			return messages;
 		},
-		
+
 		guid : function() {
 			function s4() {
 				return Math.floor((1 + Math.random()) * 0x10000)
@@ -159,7 +169,7 @@ var app= new Vue({
 
 			$('.toolbar').replaceWith(this.renderToolbar());
 		},
-		
+
 		createToolbasrButton: function(icon, name, callback) {
 			this.toolBarButtons.push({
 				icon: icon,
@@ -167,7 +177,7 @@ var app= new Vue({
 				callback: callback
 			});
 		},
-		
+
 		renderToolbar: function() {
 			var $html = $('<div class="toolbar"></div>');
 
@@ -182,7 +192,7 @@ var app= new Vue({
 
 			return $html;
 		},
-		
+
 		resizableColumns: function(selector) {
 			var $element = $(selector);
 			var options = { minWidth: 10 };
@@ -261,7 +271,7 @@ var app= new Vue({
 			var lastRequestId = Object.keys(self.requests)[Object.keys(self.requests).length - 1];
 
 			self.showIncomingRequests = requestId == lastRequestId;
-			
+
 			self.$nextTick(function () {
 				// DOM 现在更新了
 				$('#tabs').tabs('refresh');
@@ -352,7 +362,7 @@ var app= new Vue({
 					messages:[],
 				}
 			;
-			
+
 			if (!data) {
 				return topGroup;
 			}
@@ -538,7 +548,7 @@ var app= new Vue({
 		handleResize: function() {
 			this.activeTimelineLegend = this.generateTimelineLegend();
 		},
-		
+
 		getRequestMethod : function(request) {
 			var method = request.method;
 			for (var i=0; i<request.headers.length; i++ ) {
@@ -546,14 +556,14 @@ var app= new Vue({
 					method = 'xhr';
 				}
 			}
-			
+
 			return method;
 		},
-		
+
 		hideDetailPanel: function(e) {
 			$(e.target).closest('div.panel-detail').hide();
 		}
-		
-		
+
+
 	}
 });

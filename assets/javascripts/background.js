@@ -26,7 +26,7 @@ chrome.browserAction.onClicked.addListener(function(tab)
 	{
 		chrome.browserAction.setIcon({ path: "assets/images/FirePHP_19_gray.png" });
 	}
-	
+
 	chrome.storage.local.set({'isPoweredOn': isPoweredOn});
 });
 
@@ -50,6 +50,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details)
 	{
 		"name": "X-Wf-Max-Combined-Size",
 		"value": "262144"
+	});
+	details.requestHeaders.push(
+	{
+		"name": "X-FirePHP-Encoding",
+		"value": "zlib-deflate"
 	});
 	return { requestHeaders: details.requestHeaders };
 },
