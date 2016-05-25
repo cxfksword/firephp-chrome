@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/pretty-jason.css">
 		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/jquery.resizableColumns.css">
 		<link rel="stylesheet" type="text/css" href="vendor/assets/stylesheets/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/pretty-jason.css">
 		<link rel="stylesheet" type="text/css" href="assets/stylesheets/panel.css">
 		<link rel="stylesheet" type="text/css" href="assets/stylesheets/console.css">
 		<link rel="stylesheet" type="text/css" href="assets/stylesheets/dataGrid.css">
@@ -82,7 +82,7 @@
 					</div>
 
 					<div class="tabbed-pane-content data-grid data-grid-details">
-						
+
 						<div id="tab-log">
 							<table class="stupidtable" id="log">
 								<thead>
@@ -103,7 +103,7 @@
 								</tbody>
 							</table>
 						</div>
-						
+
 						<div id="tab-log-{{index}}" v-for="(index, msg) in activeLog.messages | filterBy 'group' in 'type'">
 							<table class="stupidtable" id="log-{{index}}">
 								<thead>
@@ -127,8 +127,8 @@
 				</div>
 			</div>
 		</div>
-		
-		
+
+
 		<script src="vendor/assets/javascripts/jquery-2.0.2.min.js"></script>
 		<script src="vendor/assets/javascripts/jquery-ui-1.10.3.custom.min.js"></script>
 		<script src="vendor/assets/javascripts/stupidtable.min.js"></script>
@@ -136,9 +136,9 @@
 		<script src="vendor/assets/javascripts/URI.min.js"></script>
 		<script src="vendor/assets/javascripts/keymaster.min.js"></script>
 		<script src="vendor/assets/javascripts/vue.min.js"></script>
-		<script src="vendor/assets/javascripts/pretty-jason.js"></script>
 		<script src="vendor/assets/javascripts/jquery.resizableColumns.min.js"></script>
 		<script src="vendor/assets/javascripts/clipboard.min.js"></script>
+		<script src="assets/javascripts/pretty-jason.js"></script>
 		<script src="assets/javascripts/panel.js"></script>
 		<script src="assets/javascripts/directive.js"></script>
 		<!--<script src="assets/javascripts/toolbar.js"></script>-->
