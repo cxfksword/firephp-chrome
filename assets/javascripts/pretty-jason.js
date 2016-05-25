@@ -44,7 +44,7 @@ g.PrettyJason.prototype.generateHtml = function()
 	var $clipboard = $('<i class="fa clipboard" aria-hidden="true" title="Copy!"></i>');
 	new Clipboard($clipboard.get(0), {
 		text: function(trigger) {
-			return $(trigger).closest('li').find('ul pre').text();
+			return $(trigger).closest('td').find('ul.pretty-jason-detail pre').text();
 		}
 	});
 	$li.append($clipboard);
