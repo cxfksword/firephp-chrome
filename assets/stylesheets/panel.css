@@ -29,6 +29,11 @@ th, td {
 	color: rgb(59, 59, 59);
 }
 
+.toolbar .fa-circle.active {
+    color: rgb(216, 0, 0) !important;
+    text-shadow:0 0 4px rgba(255,0,0,1);
+}
+
 .split-view {
 	bottom: 0;
 	left: 0;

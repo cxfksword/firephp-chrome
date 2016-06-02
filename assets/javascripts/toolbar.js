@@ -12,6 +12,11 @@ return {
             name: name,
             callback: callback
         });
+        this.buttons.push({
+            icon: icon,
+            name: name,
+            callback: callback
+        });
     },
 
     render: function()

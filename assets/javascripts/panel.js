@@ -19,6 +19,7 @@ var app= new Vue({
 
 		toolBarButtons: []
 	},
+	panelSendPort: null,
 	ready: function() {
 		$('#tabs').tabs();
 		this.resizableColumns("#requests-header");
@@ -36,18 +37,12 @@ var app= new Vue({
 	   initChrome: function() {
 		   var self = this;
 		   var isPoweredOn = true;
-		   chrome.storage.local.get('isPoweredOn', function(result) {
-				isPoweredOn = typeof result.isPoweredOn == 'undefined' ? true : result.isPoweredOn;
-		   });
-		   chrome.storage.onChanged.addListener(function(changes, area) {
-  				if(area == "local") {
-  					for(var key in changes) {
-  						if (key == 'isPoweredOn') {
-  							isPoweredOn = changes[key];
-  						}
-  					}
-  				}
-  			});
+		   self.panelSendPort = chrome.runtime.connect({name: "panel-send-msg"});
+		   var port = chrome.runtime.connect({name: "panel-recv-msg"});
+		   port.onMessage.addListener(function(msg) {
+		   		alert(msg.isPoweredOn);
+		   		isPoweredOn = msg.isPoweredOn;
+			});
 			// key('⌘+k, ctrl+l', function() {
 			// 	this.$apply(function() {
 			// 		this.clear();
@@ -162,6 +157,16 @@ var app= new Vue({
 
 		createToolbar : function(){
 			var self = this;
+			this.createToolbasrButton('circle active', 'Stop recording', function()
+			{
+				if ($(this).find('i.fa').hasClass('active')) {
+					$(this).find('i.fa').removeClass('active');
+					self.panelSendPort.postMessage({'startCapture': false});
+				} else {
+					$(this).find('i.fa').addClass('active');
+					self.panelSendPort.postMessage({'startCapture': true});
+				}
+			});
 			this.createToolbasrButton('ban', 'Clear', function()
 			{
 				self.clear();

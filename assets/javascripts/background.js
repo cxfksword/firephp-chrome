@@ -1,41 +1,71 @@
-var isPoweredOn = true;
+var startCapture = false;
+var openDevtools = false;
+
+var devtoolsConnected = false;
+var panelStatusConnected = false;
+var recvPanelStatusConnected = false;
+var panelStatusPort = null;
 
 document.addEventListener('DOMContentLoaded', function () {
-	chrome.storage.local.get('isPoweredOn', function(result) {
-		isPoweredOn = typeof result.isPoweredOn == 'undefined' ? true : result.isPoweredOn;
-		if (isPoweredOn)
-		{
-			chrome.browserAction.setIcon({ path: "assets/images/FirePHP_19.png" });
+	// check chrome devtools opened or closed
+	chrome.runtime.onConnect.addListener(function(port) {
+	    if (port.name == "devtools-connected") {
+	    	if (!devtoolsConnected) {
+	    		devtoolsConnected = true;
+		    	openDevtools = true;
+				port.onDisconnect.addListener(function() {
+					openDevtools = false;
+					devtoolsConnected = false;
+					panelStatusConnected = false;
+					panelStatusPort = null;
+				});
+			}
 		}
-		else
-		{
-			chrome.browserAction.setIcon({ path: "assets/images/FirePHP_19_gray.png" });
+
+		if (port.name == 'panel-recv-msg') {
+			if (!panelStatusConnected) {
+				startCapture = true;
+
+				panelStatusConnected = true;
+				panelStatusPort = port;
+				panelStatusPort.onDisconnect.addListener(function() {
+					openDevtools = false;
+					devtoolsConnected = false;
+					panelStatusConnected = false;
+				});
+			}
+		}
+
+		if (port.name == 'panel-send-msg') {
+			if (!recvPanelStatusConnected) {
+				recvPanelStatusConnected = true;
+				port.onMessage.addListener(function(msg) {
+			   		startCapture = msg.startCapture;
+				});
+			}
 		}
 	});
 });
 
-chrome.browserAction.onClicked.addListener(function(tab)
-{
-	chrome.browserAction.setBadgeText({'text': ''});
-	isPoweredOn = !isPoweredOn;
-	if (isPoweredOn)
-	{
-		chrome.browserAction.setIcon({ path: "assets/images/FirePHP_19.png" });
-	}
-	else
-	{
-		chrome.browserAction.setIcon({ path: "assets/images/FirePHP_19_gray.png" });
+function toggleCapture() {
+	if (!panelStatusPort) {
+		return;
 	}
 
-	chrome.storage.local.set({'isPoweredOn': isPoweredOn});
-});
+	if (startCapture && openDevtools){
+		panelStatusPort.postMessage({'isPoweredOn': true});
+	} else {
+		panelStatusPort.postMessage({'isPoweredOn': false});
+	}
+}
 
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details)
 {
-	if (!isPoweredOn)
+	if (!startCapture || !openDevtools)
 	{
 		return { requestHeaders: details.requestHeaders };
 	}
+
 	details.requestHeaders.push(
 	{
 		"name": "X-FirePHP",
