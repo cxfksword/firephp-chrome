@@ -40,7 +40,6 @@ var app= new Vue({
 		   self.panelSendPort = chrome.runtime.connect({name: "panel-send-msg"});
 		   var port = chrome.runtime.connect({name: "panel-recv-msg"});
 		   port.onMessage.addListener(function(msg) {
-		   		alert(msg.isPoweredOn);
 		   		isPoweredOn = msg.isPoweredOn;
 			});
 			// key('⌘+k, ctrl+l', function() {

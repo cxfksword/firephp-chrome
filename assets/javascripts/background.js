@@ -13,11 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
 	    	if (!devtoolsConnected) {
 	    		devtoolsConnected = true;
 		    	openDevtools = true;
+		    	toggleCapture();
 				port.onDisconnect.addListener(function() {
 					openDevtools = false;
 					devtoolsConnected = false;
 					panelStatusConnected = false;
 					panelStatusPort = null;
+					toggleCapture();
 				});
 			}
 		}
@@ -28,10 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 				panelStatusConnected = true;
 				panelStatusPort = port;
+				toggleCapture();
 				panelStatusPort.onDisconnect.addListener(function() {
 					openDevtools = false;
 					devtoolsConnected = false;
 					panelStatusConnected = false;
+					toggleCapture();
 				});
 			}
 		}
@@ -41,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				recvPanelStatusConnected = true;
 				port.onMessage.addListener(function(msg) {
 			   		startCapture = msg.startCapture;
+			   		toggleCapture();
 				});
 			}
 		}
@@ -52,10 +57,13 @@ function toggleCapture() {
 		return;
 	}
 
-	if (startCapture && openDevtools){
-		panelStatusPort.postMessage({'isPoweredOn': true});
-	} else {
-		panelStatusPort.postMessage({'isPoweredOn': false});
+	try {
+		if (startCapture && openDevtools){
+			panelStatusPort.postMessage({'isPoweredOn': true});
+		} else {
+			panelStatusPort.postMessage({'isPoweredOn': false});
+		}
+	} catch(e) {
 	}
 }
 
