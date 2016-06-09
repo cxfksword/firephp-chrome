@@ -149,7 +149,7 @@ th, td {
 	padding: 0;
 }
 
-.data-grid-requests {
+.data-grid-requests #requests tbody tr {
 	cursor: pointer;
 }
 
@@ -434,7 +434,7 @@ th, td {
 }
 
 .stupidtable th {
-	cursor: pointer;
+	/*cursor: pointer;*/
 }
 
 .panel-detail {

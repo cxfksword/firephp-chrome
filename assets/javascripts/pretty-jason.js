@@ -32,7 +32,7 @@ g.PrettyJason.prototype.generateHtml = function()
 
 
 	var json = JSON.stringify(this.data);
-	var preview = json.length > 80? json.substr(0, 80) + '...' : json;
+	var preview = json.length > 50? json.substr(0, 50) + '...' : json;
 	var $itemName = $('<span><span class="pretty-jason-icon"><i class="pretty-jason-icon-closed"></i></span> </span>');
 
 

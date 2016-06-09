@@ -1,6 +1,6 @@
 {
 	"name": "firephp-chrome",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"manifest_version": 2,
 	"description": "A firephp log extension for chrome",
 	"devtools_page": "devtools.html",

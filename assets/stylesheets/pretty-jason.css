@@ -16,8 +16,12 @@
 	padding: 1px 0;
 }
 
-.pretty-jason>li>pre,.pretty-jason-detail>li>pre {
+.pretty-jason>li>pre {
 	cursor: pointer;
+	display: inline-block;
+}
+
+.pretty-jason-detail>li>pre {
 	display: inline-block;
 }
 
