@@ -38,13 +38,14 @@ g.PrettyJason.prototype.generateHtml = function()
 
 	$item.append($itemName);
 	$item.append(this._highlight(preview));
-	$item.click(this._objectNodeClickedCallback);
+	$item.click(this._previewClickedCallback);
 	$li.append($item);
 
 	var $clipboard = $('<i class="fa clipboard" aria-hidden="true" title="Copy!"></i>');
 	new Clipboard($clipboard.get(0), {
 		text: function(trigger) {
-			return $(trigger).closest('td').find('ul.pretty-jason-detail pre').text();
+			var text = $(trigger).closest('td').find('ul.pretty-jason-detail').text();
+			return text.replace(/-\{/g, '{').replace(/-\[/g, '[').replace(/-\"/g, '"');
 		}
 	});
 	$li.append($clipboard);
@@ -52,8 +53,11 @@ g.PrettyJason.prototype.generateHtml = function()
 
 
 
-	var json = JSON.stringify(this.data, undefined, 2);
-	$li.append('<ul  class="pretty-jason-detail" style="display:none"><li><pre>' + this._highlight(json) + '</li></ul></pre>')
+	// var json = JSON.stringify(this.data, undefined, 2);
+	// $li.append('<ul  class="pretty-jason-detail" style="display:none"><li><pre>' + this._highlight(json) + '</li></ul></pre>')
+	var $detail = $('<ul class="pretty-jason-detail" style="display:none"></ul>');
+	var $detailLi = $('<li></li>').JSONView(this.data);;
+	$li.append($detail.append($detailLi));
 
 	$list.append($li);
 	return $list;
@@ -80,7 +84,7 @@ g.PrettyJason.prototype._highlight = function(json)
 };
 
 
-g.PrettyJason.prototype._objectNodeClickedCallback = function()
+g.PrettyJason.prototype._previewClickedCallback = function()
 {
 	var $list = $(this).closest('td').find('ul.pretty-jason-detail');
 	var $icon = $(this).find('i');
