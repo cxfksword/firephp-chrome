@@ -70,3 +70,8 @@
     height: 12px;
     background-size: 12px;
 }
+
+.jsonview .prop {
+    font-weight: normal !important;
+    color: red;
+}
