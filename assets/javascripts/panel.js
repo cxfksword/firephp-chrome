@@ -85,6 +85,12 @@ var app= new Vue({
 					data.cookies = request.request.cookies;
 					data.log = messages;
 					self.addRequest(requestId, data);
+
+					ext = null;
+					headers = null;
+					messages = null;
+					data = null;
+					request = null;
 			});
 	   },
 
@@ -236,7 +242,7 @@ var app= new Vue({
 
 			Vue.set(self.requests, requestId, data);
 
-			if (self.showIncomingRequests) {
+			if ($('#requests tr.selected').length <= 0) {
 				self.setActive(requestId);
 			}
 		},
@@ -276,9 +282,19 @@ var app= new Vue({
 
 			self.showIncomingRequests = requestId == lastRequestId;
 
+			var activeGroup = $('#tabs .ui-tabs-active').text();
 			self.$nextTick(function () {
+				var activeIndex = 0;
+				$('#tabs li').each(function(i, el){
+					if ($(el).text() == activeGroup) {
+						activeIndex = i;
+					}
+				});
+
 				// DOM 现在更新了
 				$('#tabs').tabs('refresh');
+				$('#tabs').tabs( "option", "active", activeIndex);
+
 			});
 		},
 
