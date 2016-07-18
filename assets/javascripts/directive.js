@@ -103,7 +103,7 @@ function getPrettyLog($element, msg, nestLevel) {
 			return false;
 		})
 }
-var ttt = [];
+
 function getPrettyMsg(msg) {
 	var data = msg.messages;
 	var jason;
@@ -125,7 +125,6 @@ function getPrettyMsg(msg) {
 	}
 
 	if (jason) {
-		ttt.push(jason);
 		return jason.generateHtml();
 	} else {
 		return data;
