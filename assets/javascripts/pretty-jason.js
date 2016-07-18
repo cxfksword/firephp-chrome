@@ -2,6 +2,42 @@
 
 "use strict";
 
+$(g.document).on('click', '.console-group-level ul.pretty-jason li>pre', function() {
+	var $list = $(this).closest('td').find('ul.pretty-jason-detail');
+	var $icon = $(this).find('i');
+
+	$icon.removeClass('pretty-jason-icon-closed');
+	$icon.removeClass('pretty-jason-icon-open');
+
+	if ($list.css('display') == 'none') {
+		$list.show();
+		$icon.addClass('pretty-jason-icon-open');
+	} else {
+		$list.hide();
+		$icon.addClass('pretty-jason-icon-closed');
+	}
+});
+
+var bindClipboardObj = null;
+g.bindClipboard = function () {
+	if (bindClipboardObj) {
+		bindClipboardObj.destroy();
+		bindClipboardObj = null;
+	}
+	bindClipboardObj = new Clipboard('.console-group-level ul.pretty-jason .clipboard', {
+		text: function(trigger) {
+			var text = $(trigger).closest('td').find('ul.pretty-jason-detail').text();
+			var json = text.replace(/-\{/g, '{').replace(/-\[/g, '[').replace(/-\"/g, '"');
+			try {
+				var data = JSON.parse(json);
+				return JSON.stringify(data, undefined, 2);
+			}catch(e) {
+				return json;
+			}
+		}
+	});
+};
+
 g.PrettyJason = function(data)
 {
 	if (data instanceof Object) {
@@ -26,6 +62,7 @@ g.PrettyJason.prototype.print = function(target)
 
 g.PrettyJason.prototype.generateHtml = function()
 {
+	var self = this;
 	var $list = $('<ul class="pretty-jason"></ul>');
 	var $li = $('<li></li>');
 	var $item = $('<pre></pre>');
@@ -44,8 +81,7 @@ g.PrettyJason.prototype.generateHtml = function()
 	var $clipboard = $('<i class="fa clipboard" aria-hidden="true" title="Copy!"></i>');
 	new Clipboard($clipboard.get(0), {
 		text: function(trigger) {
-			var text = $(trigger).closest('td').find('ul.pretty-jason-detail').text();
-			return text.replace(/-\{/g, '{').replace(/-\[/g, '[').replace(/-\"/g, '"');
+			return JSON.stringify(self.data, undefined, 2);
 		}
 	});
 	$li.append($clipboard);

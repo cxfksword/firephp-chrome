@@ -1,6 +1,7 @@
 
 Vue.directive('prettyLog', function (msg) {
 	getPrettyLog($(this.el), msg, 0);
+	bindClipboard();
 });
 
 Vue.directive('prettyFile', function (meta) {
@@ -35,7 +36,6 @@ function getPrettyLog($element, msg, nestLevel) {
 		var label = '';
 		var labelColor = '';
 		var labelClass = '';
-		var jason;
 
 		if (msg.type == 'info') {
 			$element.addClass('console-info-level');
@@ -88,8 +88,9 @@ function getPrettyLog($element, msg, nestLevel) {
 		$element.find('.log-message').html($el);
 
 		if ($element.find('.log-message .pretty-jason-detail').length > 0) {
-			var $detail = $element.find('.log-message .pretty-jason-detail');
-			$element.find('.log-message').append($detail);
+			$element.find('.log-message .pretty-jason-detail').each(function() {
+				$(this).closest('.log-message').append($(this));
+			});
 		}
 
 		$('.console-exception-level span.console-label,.console-trace-level span.console-label').click(function() {
@@ -102,7 +103,7 @@ function getPrettyLog($element, msg, nestLevel) {
 			return false;
 		})
 }
-
+var ttt = [];
 function getPrettyMsg(msg) {
 	var data = msg.messages;
 	var jason;
@@ -124,6 +125,7 @@ function getPrettyMsg(msg) {
 	}
 
 	if (jason) {
+		ttt.push(jason);
 		return jason.generateHtml();
 	} else {
 		return data;
@@ -132,7 +134,6 @@ function getPrettyMsg(msg) {
 
 function getPrettyTable(msg) {
 	var data = msg.messages;
-	var jason;
 
 	var html = '<table class="console-data-grid">';
 
@@ -181,7 +182,6 @@ function getPrettyGroup(msg, nestLevel) {
 
 function getPrettyException(msg) {
 	var data = msg.messages;
-	var jason;
 
 	var html = '<table class="hide">';
 
@@ -201,7 +201,6 @@ function getPrettyException(msg) {
 
 function getPrettyTrace(msg) {
 	var data = msg.messages;
-	var jason;
 
 	var html = '<table class="hide">';
 
