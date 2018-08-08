@@ -131,6 +131,8 @@ var app= new Vue({
 							if (enableZlib) {
 								currentMessage = ZLIB.inflateInit().inflate(atob(currentMessage));
 							}
+							// add a leading \u200B characters to identify bigint number string, . This Unicode value is a zero - width space, so doubling it won't affect the HTML view (fix bigint/long type)
+							currentMessage = currentMessage.replace(/(?<=:\s*)(\d{16}\d+)(?!["'])/g, '"\u200B$1"');
 							messages[idx] = jQuery.parseJSON(currentMessage);
 						}
 						catch (e)

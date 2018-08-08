@@ -116,6 +116,8 @@ function getPrettyMsg(msg) {
 		data = '<i>undefined</i>';
 	} else if (data === null) {
 		data = '<i>null</i>';
+	} else if (data === '') {
+		data = $('<div>').text(data).html();
 	} else if (typeof data !== 'number') {
 		try {
 			jason = new PrettyJason(data);

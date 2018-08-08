@@ -52,6 +52,12 @@ Licensed under the MIT License.
       if (/^(http|https|file):\/\/[^\s]+$/i.test(value)) {
         return "<a href=\"" + (this.htmlEncode(value)) + "\"><span class=\"q\">\"</span>" + (this.jsString(value)) + "<span class=\"q\">\"</span></a>";
       } else {
+        // big number string, restore to big number fomat(fix bigint/long type)
+        if (value.match(/\u200B(\d{16}\d+)/g)) {
+          value = value.replace(/["'\u200B]/g, '');
+          return this.decorateWithSpan(value, 'num');
+        }
+
         multilineClass = '';
         value = this.jsString(value);
         if (this.options.nl2br) {

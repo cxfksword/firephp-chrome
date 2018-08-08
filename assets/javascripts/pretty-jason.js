@@ -30,7 +30,10 @@ g.bindClipboard = function () {
 			var json = text.replace(/-\{/g, '{').replace(/-\[/g, '[').replace(/-\"/g, '"');
 			try {
 				var data = JSON.parse(json);
-				return JSON.stringify(data, undefined, 2);
+				json = JSON.stringify(data, undefined, 2);
+
+				// restore big number string to big number fomat(fix bigint/long type)
+				return json.replace(/\"\u200B(\d{16}\d+)\"/g, '$1');
 			}catch(e) {
 				return json;
 			}
@@ -81,7 +84,9 @@ g.PrettyJason.prototype.generateHtml = function()
 	var $clipboard = $('<i class="fa clipboard" aria-hidden="true" title="Copy!"></i>');
 	new Clipboard($clipboard.get(0), {
 		text: function(trigger) {
-			return JSON.stringify(self.data, undefined, 2);
+			var json = JSON.stringify(self.data, undefined, 2);
+			// restore big number string to big number fomat(fix bigint/long type)
+			return json.replace(/\"\u200B(\d{16}\d+)\"/g, '$1');
 		}
 	});
 	$li.append($clipboard);
